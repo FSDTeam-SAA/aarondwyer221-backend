@@ -8,8 +8,8 @@ export interface IUser {
   email: string;
   phone: string;
   password: string;
-  street: string;
-  location: string;
+  address: string;
+  city: string;
   postalCode: string;
   dateOfBirth: Date;
   role: string;
@@ -17,6 +17,8 @@ export interface IUser {
     public_id: string;
     url: string;
   };
+  gender: "male" | "female";
+  country: string;
   isVerified: boolean;
   otp?: string | null;
   otpExpires?: Date | null;

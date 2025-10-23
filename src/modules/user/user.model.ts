@@ -25,10 +25,10 @@ const userSchema = new Schema<IUser>(
       type: String,
       required: true,
     },
-    street: {
+    address: {
       type: String,
     },
-    location: {
+    city: {
       type: String,
     },
     postalCode: {
@@ -54,10 +54,18 @@ const userSchema = new Schema<IUser>(
       type: Boolean,
       default: false,
     },
+    gender: {
+      type: String,
+      enum: ["male", "female"],
+    },
+    country: {
+      type: String,
+    },
     otp: { type: String, default: null },
     otpExpires: { type: Date, default: null },
     resetPasswordOtp: { type: String, default: null },
     resetPasswordOtpExpires: { type: Date, default: null },
+    
   },
   {
     timestamps: true,
