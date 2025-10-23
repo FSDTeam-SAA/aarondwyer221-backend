@@ -61,8 +61,21 @@ const getAllVerifiedODRPDocuments = catchAsync(async (req, res) => {
   });
 });
 
+const getSingeODRPDocument = catchAsync(async (req, res) => {
+  const { id } = req.params;
+  const result = await JoinODRPService.getSingleODRPDocument(id);
+
+  sendResponse(res, {
+    statusCode: StatusCodes.OK,
+    success: true,
+    message: "Document fetched successfully",
+    data: result,
+  });
+});
+
 export const JoinODRPController = {
   joinODRPController,
   getAllODRPDocuments,
   getAllVerifiedODRPDocuments,
+  getSingeODRPDocument,
 };

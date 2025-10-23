@@ -170,8 +170,23 @@ const getAllVerifiedODRPDocuments = async (filters: any) => {
   };
 };
 
+const getSingleODRPDocument = async (id: string) => {
+  const document = await JoinODRPModel.findById(id);
+  if (!document) {
+    throw new AppError("Document not found", StatusCodes.NOT_FOUND);
+  }
+
+  const result = await JoinODRPModel.findById(id).populate(
+    "userId",
+    "firstName lastName email phone address city postalCode  dateOfBirth country"
+  );
+
+  return result;
+};
+
 export const JoinODRPService = {
   joinODRP,
   getAllODRPDocuments,
   getAllVerifiedODRPDocuments,
+  getSingleODRPDocument,
 };

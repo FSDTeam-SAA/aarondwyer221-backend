@@ -26,4 +26,11 @@ router.get(
 );
 
 
+router.get(
+  "/document/:id",
+//   auth(USER_ROLE.ADMIN),
+  JoinODRPController.getSingeODRPDocument
+);
+
+
 export const joinODRPRouter = router;
