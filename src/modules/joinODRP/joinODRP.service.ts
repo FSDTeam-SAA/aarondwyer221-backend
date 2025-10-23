@@ -88,7 +88,6 @@ const getAllODRPDocuments = async (filters: any) => {
   const { page, limit, search, status, sort } = filters;
   const query: any = {};
 
-
   if (search) {
     query.$or = [
       { "userId.firstName": { $regex: search, $options: "i" } },
@@ -131,8 +130,48 @@ const getAllODRPDocuments = async (filters: any) => {
   };
 };
 
+const getAllVerifiedODRPDocuments = async (filters: any) => {
+  const { page, limit, search, city } = filters;
+  const query: any = { isVerified: true, status: "approved" };
+
+  if (search) {
+    query.$or = [
+      { "userId.firstName": { $regex: search, $options: "i" } },
+      { "userId.lastName": { $regex: search, $options: "i" } },
+    ];
+  }
+
+  const skip = (page - 1) * limit;
+
+  let documents = await JoinODRPModel.find(query)
+    .populate("userId", "firstName lastName email country city")
+    .sort({ createdAt: -1 })
+    .skip(skip)
+    .limit(limit);
+
+  if (city) {
+    documents = documents.filter(
+      (doc: any) =>
+        doc.userId?.city &&
+        doc.userId.city.toLowerCase().includes(city.toLowerCase())
+    );
+  }
+
+  const total = documents.length;
+
+  return {
+    meta: {
+      total,
+      page,
+      limit,
+      totalPages: Math.ceil(total / limit),
+    },
+    data: documents,
+  };
+};
 
 export const JoinODRPService = {
   joinODRP,
   getAllODRPDocuments,
+  getAllVerifiedODRPDocuments,
 };

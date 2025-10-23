@@ -19,4 +19,11 @@ router.get(
   JoinODRPController.getAllODRPDocuments
 );
 
+router.get(
+  "/verified-documents",
+//   auth(USER_ROLE.ADMIN),
+  JoinODRPController.getAllVerifiedODRPDocuments
+);
+
+
 export const joinODRPRouter = router;

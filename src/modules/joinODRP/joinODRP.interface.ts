@@ -21,4 +21,5 @@ export interface IJoinODRP {
     url: string;
   }[];
   status: string;
+  isVerified: boolean;
 }

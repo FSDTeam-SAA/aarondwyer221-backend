@@ -39,6 +39,10 @@ const joinODRPSchema = new Schema<IJoinODRP>(
       enum: ["pending", "approved", "rejected"],
       default: "pending",
     },
+    isVerified: {
+      type: Boolean,
+      default: false,
+    },
   },
   {
     timestamps: true,
