@@ -16,35 +16,48 @@ router.post(
 
 router.post(
   "/verify-email",
-  auth(USER_ROLE.ADMIN, USER_ROLE.USER),
+  auth(
+    USER_ROLE.ADMIN,
+    USER_ROLE.USER,
+    USER_ROLE.TEACHER,
+    USER_ROLE.PARENT,
+    USER_ROLE.ORGANIZER
+  ),
   userController.verifyEmail
 );
 
 router.post(
   "/resend-otp",
-  auth(USER_ROLE.ADMIN, USER_ROLE.USER),
+  auth(
+    USER_ROLE.ADMIN,
+    USER_ROLE.USER,
+    USER_ROLE.TEACHER,
+    USER_ROLE.PARENT,
+    USER_ROLE.ORGANIZER
+  ),
   userController.resendOtpCode
 );
 
 router.get("/all-users", userController.getAllUsers);
 router.get(
   "/my-profile",
-  auth(USER_ROLE.ADMIN, USER_ROLE.USER),
+  auth(
+    USER_ROLE.ADMIN,
+    USER_ROLE.USER,
+    USER_ROLE.TEACHER,
+    USER_ROLE.PARENT,
+    USER_ROLE.ORGANIZER
+  ),
   userController.getMyProfile
 );
 
 router.put(
   "/update-profile",
   upload.single("image"),
-  auth(USER_ROLE.ADMIN, USER_ROLE.USER),
+  auth(USER_ROLE.ADMIN, USER_ROLE.USER, USER_ROLE.TEACHER, USER_ROLE.PARENT, USER_ROLE.ORGANIZER),
   userController.updateUserProfile
 );
 
-router.get(
-  "/admin_id",
-  auth(USER_ROLE.ADMIN, USER_ROLE.USER),
-  userController.getAdminId
-);
 
 const userRouter = router;
 export default userRouter;

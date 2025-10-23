@@ -18,6 +18,12 @@ const registerUser = async (payload: IUser) => {
     throw new AppError("User already exists", StatusCodes.CONFLICT);
   }
 
+
+  if(payload.role === "admin"){
+    throw new AppError("Cannot register as admin", StatusCodes.BAD_REQUEST);
+  }
+
+
   // Password check
   if (payload.password.length < 6) {
     throw new AppError(
@@ -95,11 +101,8 @@ const verifyEmail = async (email: string, payload: string) => {
   if (!existingUser)
     throw new AppError("User not found", StatusCodes.NOT_FOUND);
 
-  // if (!existingUser.otp || !existingUser.otpExpires) {
-  //   throw new AppError("OTP not requested or expired", StatusCodes.BAD_REQUEST);
-  // }
   if (!existingUser.otp || !existingUser.otpExpires) {
-    throw new AppError("OTP somoy sasee, abar denn", StatusCodes.BAD_REQUEST);
+    throw new AppError("OTP not requested or expired", StatusCodes.BAD_REQUEST);
   }
 
   if (existingUser.otpExpires < new Date()) {
@@ -161,10 +164,7 @@ const getAllUsers = async () => {
   return result;
 };
 
-const getAdminId = async () => {
-  const admin = await User.findOne({ role: "admin" }).select("_id");
-  return admin;
-};
+
 
 const getMyProfile = async (email: string) => {
   const existingUser = await User.findOne({ email });
@@ -198,7 +198,9 @@ const updateUserProfile = async (payload: any, email: string, file: any) => {
 
   const result = await User.findOneAndUpdate({ email }, updateData, {
     new: true,
-  });
+  }).select(
+    "-password -otp -otpExpires -resetPasswordOtp -resetPasswordOtpExpires"
+  );
 
   if (file && oldImagePublicId) {
     await deleteFromCloudinary(oldImagePublicId);
@@ -214,7 +216,6 @@ const userService = {
   getAllUsers,
   getMyProfile,
   updateUserProfile,
-  getAdminId,
 };
 
 export default userService;

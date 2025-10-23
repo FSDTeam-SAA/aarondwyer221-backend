@@ -61,16 +61,7 @@ const getAllUsers = catchAsync(async (req, res) => {
   });
 });
 
-const getAdminId = catchAsync(async (req, res) => {
-  const result = await userService.getAdminId();
 
-  sendResponse(res, {
-    statusCode: StatusCodes.OK,
-    success: true,
-    message: "Admin ID fetched successfully",
-    data: result,
-  });
-});
 
 const getMyProfile = catchAsync(async (req, res) => {
   const { email } = req.user;
@@ -103,7 +94,6 @@ const userController = {
   getAllUsers,
   getMyProfile,
   updateUserProfile,
-  getAdminId,
 };
 
 export default userController;
