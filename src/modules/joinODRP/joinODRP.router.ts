@@ -13,4 +13,10 @@ router.post(
   JoinODRPController.joinODRPController
 );
 
+router.get(
+  "/all-documents",
+//   auth(USER_ROLE.ADMIN),
+  JoinODRPController.getAllODRPDocuments
+);
+
 export const joinODRPRouter = router;

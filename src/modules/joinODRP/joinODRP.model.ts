@@ -36,6 +36,7 @@ const joinODRPSchema = new Schema<IJoinODRP>(
     ],
     status: {
       type: String,
+      enum: ["pending", "approved", "rejected"],
       default: "pending",
     },
   },

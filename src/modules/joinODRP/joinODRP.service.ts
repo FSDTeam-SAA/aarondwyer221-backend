@@ -1,6 +1,6 @@
 import { StatusCodes } from "http-status-codes";
 import AppError from "../../errors/AppError";
-import { deleteFromCloudinary, uploadToCloudinary } from "../../utils/cloudinary";
+import { uploadToCloudinary } from "../../utils/cloudinary";
 import { User } from "../user/user.model";
 import { IJoinODRP } from "./joinODRP.interface";
 import { JoinODRPModel } from "./joinODRP.model";
@@ -37,7 +37,6 @@ const joinODRP = async (
     : titles.split(",").map((t) => t.trim());
 
   const documents: IJoinODRP["documents"] = [];
-//   let oldImagePublicId: string | undefined;
 
   if (files && files.length > 0) {
     for (let i = 0; i < files.length; i++) {
@@ -45,7 +44,6 @@ const joinODRP = async (
       const title = normalizedTitles[i] || normalizedTitles[0];
 
       const upload = await uploadToCloudinary(file.path, "odrp-documents");
-    //   oldImagePublicId = upload.public_id;
 
       documents.push({
         title,
@@ -56,11 +54,6 @@ const joinODRP = async (
   } else {
     throw new AppError("No files uploaded", StatusCodes.BAD_REQUEST);
   }
-
-//   if(files && oldImagePublicId) {
-//     await deleteFromCloudinary(oldImagePublicId);
-//   }
-
 
   const joinData = await JoinODRPModel.create({
     userId: user._id,
@@ -91,6 +84,55 @@ const joinODRP = async (
   return joinData;
 };
 
+const getAllODRPDocuments = async (filters: any) => {
+  const { page, limit, search, status, sort } = filters;
+  const query: any = {};
+
+
+  if (search) {
+    query.$or = [
+      { "userId.firstName": { $regex: search, $options: "i" } },
+      { "userId.lastName": { $regex: search, $options: "i" } },
+    ];
+  }
+
+  if (status && ["pending", "approved", "rejected"].includes(status)) {
+    query.status = status;
+  }
+
+  const now = new Date();
+  if (sort === "last-7-days") {
+    const last7Days = new Date();
+    last7Days.setDate(now.getDate() - 7);
+    query.createdAt = { $gte: last7Days };
+  } else if (sort === "monthly") {
+    const firstOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
+    query.createdAt = { $gte: firstOfMonth };
+  }
+
+  const skip = (page - 1) * limit;
+
+  const documents = await JoinODRPModel.find(query)
+    .populate("userId", "firstName lastName email")
+    .sort({ createdAt: -1 })
+    .skip(skip)
+    .limit(limit);
+
+  const total = await JoinODRPModel.countDocuments(query);
+
+  return {
+    meta: {
+      total,
+      page,
+      limit,
+      totalPages: Math.ceil(total / limit),
+    },
+    data: documents,
+  };
+};
+
+
 export const JoinODRPService = {
   joinODRP,
+  getAllODRPDocuments,
 };
