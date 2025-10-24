@@ -73,9 +73,23 @@ const getSingeODRPDocument = catchAsync(async (req, res) => {
   });
 });
 
+const updateODRPDocumentStatus = catchAsync(async (req, res) => {
+  const { id } = req.params;
+  const { status } = req.body;
+  const result = await JoinODRPService.updateODRPDocumentStatus(id, status);
+
+  sendResponse(res, {
+    statusCode: StatusCodes.OK,
+    success: true,
+    message: "Document status updated successfully",
+    data: result,
+  });
+});
+
 export const JoinODRPController = {
   joinODRPController,
   getAllODRPDocuments,
   getAllVerifiedODRPDocuments,
   getSingeODRPDocument,
+  updateODRPDocumentStatus,
 };

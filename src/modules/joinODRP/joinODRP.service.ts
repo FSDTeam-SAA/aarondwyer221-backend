@@ -184,9 +184,26 @@ const getSingleODRPDocument = async (id: string) => {
   return result;
 };
 
+const updateODRPDocumentStatus = async (id: string, status: string) => {
+  const document = await JoinODRPModel.findById(id);
+  if (!document) {
+    throw new AppError("Document not found", StatusCodes.NOT_FOUND);
+  }
+
+  const updateData: any = { status };
+  if (status === "approved") {
+    updateData.isVerified = true;
+  }
+
+  await JoinODRPModel.findByIdAndUpdate(id, updateData, {
+    new: true,
+  });
+};
+
 export const JoinODRPService = {
   joinODRP,
   getAllODRPDocuments,
   getAllVerifiedODRPDocuments,
   getSingleODRPDocument,
+  updateODRPDocumentStatus,
 };
