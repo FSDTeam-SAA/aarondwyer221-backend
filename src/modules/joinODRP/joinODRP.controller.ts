@@ -81,7 +81,19 @@ const updateODRPDocumentStatus = catchAsync(async (req, res) => {
   sendResponse(res, {
     statusCode: StatusCodes.OK,
     success: true,
-    message: "Document status updated successfully",
+    message: `Document is ${status} successfully`,
+    data: result,
+  });
+});
+
+const deletedRejectedODRPDocument = catchAsync(async (req, res) => {
+  const { id } = req.params;
+  const result = await JoinODRPService.deletedRejectedODRPDocument(id);
+
+  sendResponse(res, {
+    statusCode: StatusCodes.OK,
+    success: true,
+    message: `Rejected document deleted successfully`,
     data: result,
   });
 });
@@ -92,4 +104,5 @@ export const JoinODRPController = {
   getAllVerifiedODRPDocuments,
   getSingeODRPDocument,
   updateODRPDocumentStatus,
+  deletedRejectedODRPDocument,
 };

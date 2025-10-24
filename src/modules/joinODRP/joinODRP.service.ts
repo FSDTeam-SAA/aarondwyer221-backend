@@ -200,10 +200,27 @@ const updateODRPDocumentStatus = async (id: string, status: string) => {
   });
 };
 
+const deletedRejectedODRPDocument = async (id: string) => {
+  const document = await JoinODRPModel.findById(id);
+  if (!document) {
+    throw new AppError("Document not found", StatusCodes.NOT_FOUND);
+  }
+
+  if (document.status !== "rejected") {
+    throw new AppError(
+      "Only rejected documents can be deleted",
+      StatusCodes.BAD_REQUEST
+    );
+  }
+
+  await JoinODRPModel.findByIdAndDelete(id);
+};
+
 export const JoinODRPService = {
   joinODRP,
   getAllODRPDocuments,
   getAllVerifiedODRPDocuments,
   getSingleODRPDocument,
   updateODRPDocumentStatus,
+  deletedRejectedODRPDocument,
 };

@@ -33,8 +33,15 @@ router.get(
 
 router.put(
   "/status-update/:id",
-  //   auth(USER_ROLE.ADMIN),
+    auth(USER_ROLE.ADMIN),
   JoinODRPController.updateODRPDocumentStatus
 );
+
+router.delete(
+  "/delete/:id",
+    auth(USER_ROLE.ADMIN),
+  JoinODRPController.deletedRejectedODRPDocument
+);
+
 
 export const joinODRPRouter = router;
